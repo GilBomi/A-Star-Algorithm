@@ -1,9 +1,7 @@
 
-
 import java.util.ArrayList;
-import java.util.Scanner;
 
-public class Main {
+public class Main{
 
 	static boolean f=true;
 	static ArrayList<String> confirm;
@@ -13,6 +11,10 @@ public class Main {
 	static Node root; // 루트 노드 저장
 	static int recursionNum=0; // searchAlgorithm 재귀 횟수
 	static String nodeVertex=""; // 모든 정점들을 문자열로 저장
+	static String[] input;
+	static int ii;
+	String[] points;
+	int[] lengths;
 
 	static class Node{
 
@@ -33,7 +35,9 @@ public class Main {
 			if(point!=null) this.add(point,length);   
 			//point가 null이면 말단 경로
 		}
-
+		public String getVertex() {
+			return vertex;
+		}
 		//경로 추가 메소드
 		private void add(String points,int length) {
 			if(!f) {
@@ -237,83 +241,161 @@ public class Main {
 		}
 	}
 	public static void main(String[] args) {
-
-		Scanner s=new Scanner(System.in);
-		root = null;
+		System.out.println("main run");
+//		Scanner s=new Scanner(System.in);
+//		root = null;
+		Gui gui=new Gui();
+//		JLabel label2=null;
 		while(true) {
-			System.out.print("Input Route:");
-			String[] input=s.next().split("-");
-			if(input[0].equals("0")) break;
-			//confirm.add(input[0]);
-			String[] points=input[1].split("");
-			findNodeNum(input[0],points);
-			int[] lengths=new int[points.length];
-			for(int i=0;i<points.length;i++) {
-				System.out.print("Input "+input[0]+"-"+points[i]+" Length:");
-				lengths[i]=s.nextInt();
-			}
-			for(int i=0;i<points.length;i++) {
-				if(root==null) root=new Node(input[0],points[i],lengths[i]);
-				else {
-					if(!input[0].equals("a")) {
-						vHistory.add(""+input[0]+"-"+points[i]);
-						lHistory.add(lengths[i]);
-					}
-					System.out.printf("vertex %s - add %s\n",input[0],points[i]);
-					confirm=new ArrayList<String>();
-					confirm.add(input[0]);
-					root.addPoints(input[0],points[i],lengths[i]);
-					if(!f) {
-						vHistory.add(""+points[i]+"-"+input[0]);
-						lHistory.add(lengths[i]);
-						System.out.printf("vertex %s - add %s\n------------------\n",points[i],input[0]);
-						confirm=new ArrayList<String>();
-						confirm.add(points[i]);
-						root.addPoints(points[i],input[0],lengths[i]);
-					}
-				}
-				if(!f) {
-
-					for(int h=vHistory.size()-1;h>=0;h--) {
-						confirm=new ArrayList<String>();
-						confirm.add(points[i]);
-						System.out.println("add "+vHistory.get(h));
-						String[] his=vHistory.get(h).split("-");
-						if(confirm.contains(his[1])) continue;
-						confirm.add(his[0]);
-						System.out.println();
-						root.addPoints(his[0], his[1], lHistory.get(h));
-					}
-				}
-			}
-			f=false;
+			//System.out.print("Input Route:");
+//			JLabel label1=new JLabel("Input Route");
+//			JTextField text1=new JTextField(10);
+//			JButton button1=new JButton("저장");
+//			button1.addActionListener(new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					// TODO Auto-generated method stub
+//					if(e.getSource()==button1 || e.getSource()==text1)
+//						input=text1.getText().split("-");
+//				}
+//			});
+//			//String[] input=s.next().split("-");
+//			if(input[0].equals("0")) {
+//				break;
+//			}
+//			button1.setVisible(true);
+//			gui.add(label1);
+//			gui.add(text1);
+//			gui.add(button1);
+//			button1.setVisible(true);
+//			//confirm.add(input[0]);
+//			String[] points=input[1].split("");
+//			findNodeNum(input[0],points);
+//			int[] lengths=new int[points.length];
+//			for(int i=0;i<points.length;i++) {
+//				//System.out.print("Input "+input[0]+"-"+points[i]+" Length:");
+//				label2=new JLabel("Input "+input[0]+"-"+points[i]+" Length:");
+//				JTextField text2=new JTextField(10);
+//				JButton button2=new JButton("저장");
+//				ii=i;
+//				button2.addActionListener(new ActionListener() {
+//					@Override
+//					public void actionPerformed(ActionEvent e) {
+//						// TODO Auto-generated method stub
+//						if(e.getSource()==button2 || e.getSource()==text2)
+//							lengths[ii]=Integer.parseInt(text2.getText());
+//						System.out.println("ii:"+ii);
+//					}
+//				});
+//				gui.add(label2);
+//				gui.add(text2);
+//				gui.add(button2);
+//				
+//			}
+//			
+//			for(int i=0;i<points.length;i++) {
+//				if(root==null) root=new Node(input[0],points[i],lengths[i]);
+//				else {
+//					if(!input[0].equals("a")) {
+//						vHistory.add(""+input[0]+"-"+points[i]);
+//						lHistory.add(lengths[i]);
+//					}
+//					System.out.printf("vertex %s - add %s\n",input[0],points[i]);
+//					confirm=new ArrayList<String>();
+//					confirm.add(input[0]);
+//					root.addPoints(input[0],points[i],lengths[i]);
+//					if(!f) {
+//						vHistory.add(""+points[i]+"-"+input[0]);
+//						lHistory.add(lengths[i]);
+//						System.out.printf("vertex %s - add %s\n------------------\n",points[i],input[0]);
+//						confirm=new ArrayList<String>();
+//						confirm.add(points[i]);
+//						root.addPoints(points[i],input[0],lengths[i]);
+//					}
+//				}
+//				if(!f) {
+//
+//					for(int h=vHistory.size()-1;h>=0;h--) {
+//						confirm=new ArrayList<String>();
+//						confirm.add(points[i]);
+//						System.out.println("add "+vHistory.get(h));
+//						String[] his=vHistory.get(h).split("-");
+//						if(confirm.contains(his[1])) continue;
+//						confirm.add(his[0]);
+//						System.out.println();
+//						root.addPoints(his[0], his[1], lHistory.get(h));
+//					}
+//				}
+//			}
+//			f=false;
 		}
-		System.out.println(root.toString());
-		root.print(0);
-		//      for(Node n:root.points) {
-		//         System.out.println(root.vertex+"-"+n.vertex);
-		//      }
-		//      for(int i=0;i<root.getSize();i++) {
-		//         System.out.println(root.vertex+"-"+root.points.get(i).vertex+" : "+root.lengths.get(i));
-		//         for(int j=0;j<root.points.get(i).getSize();j++) {
-		//            System.out.println("   "+root.points.get(i).vertex+"-"+root.points.get(i).points.get(j).vertex+" : "+root.points.get(i).lengths.get(j));
-		//            for(int k=0;k<root.points.get(i).points.get(j).getSize();k++) {
-		//               System.out.println("      "+root.points.get(i).points.get(j).vertex+"-"+root.points.get(i).points.get(j).points.get(k).vertex+" : "+root.points.get(i).points.get(j).lengths.get(k));
-		//               for(int l=0;l<root.points.get(i).points.get(j).points.get(l).getSize();l++)
-		//                  System.out.println("         "+root.points.get(i).points.get(j).points.get(k).vertex+"-"+root.points.get(i).points.get(j).points.get(k).points.get(l).vertex+" : "+root.points.get(i).points.get(j).points.get(k).lengths.get(l));
-		//            }
-		//         }
-		//      }
-		//      System.out.println(vHistory.toString()+" , "+lHistory.toString());
-		//      System.out.println(root.vertexs.toString());
-		//      for(Node n:root.points) System.out.println(n.vertexs.toString());
-		System.out.print("도착지 입력:");
-		end=s.next();
-		start=root.vertex;
-		System.out.println("출발지는 "+start);
-		System.out.println("도착지는 "+end);
-		if(start.equals(end)) root.searchAlgorithm1(0); // 시작노드와 도착노드가 같을때
-		else root.searchAlgorithm2(0); // 시작노드와 도착노드가 다를때
+//		System.out.println(root.toString());
+//		root.print(0);
+//		System.out.print("도착지 입력:");
+//		end=s.next();
+//		start=root.vertex;
+//		System.out.println("출발지는 "+start);
+//		System.out.println("도착지는 "+end);
+//		if(start.equals(end)) root.searchAlgorithm1(0); // 시작노드와 도착노드가 같을때
+//		else root.searchAlgorithm2(0); // 시작노드와 도착노드가 다를때
 
+	}
+	public Node getRoot() {
+		return root;
+	}
+	public void setEnd(String e) {
+		end=e;
+	}
+	public String getEnd() {
+		return end;
+	}
+	public void setStart(String s) {
+		start=s;
+	}
+	public String getStart() {
+		return start;
+	}
+	public void setInput(String[] s) {
+		input=new String[s.length];
+		for(int i=0;i<input.length;i++) {
+			input[i]=s[i];
+		}
+	}
+	public void histroy(String[] points,int[] lengths) {
+		for(int i=0;i<points.length;i++) {
+			if(root==null) root=new Node(input[0],points[i],lengths[i]);
+			else {
+				if(!input[0].equals("a")) {
+					vHistory.add(""+input[0]+"-"+points[i]);
+					lHistory.add(lengths[i]);
+				}
+				System.out.printf("vertex %s - add %s\n",input[0],points[i]);
+				confirm=new ArrayList<String>();
+				confirm.add(input[0]);
+				root.addPoints(input[0],points[i],lengths[i]);
+				if(!f) {
+					vHistory.add(""+points[i]+"-"+input[0]);
+					lHistory.add(lengths[i]);
+					System.out.printf("vertex %s - add %s\n------------------\n",points[i],input[0]);
+					confirm=new ArrayList<String>();
+					confirm.add(points[i]);
+					root.addPoints(points[i],input[0],lengths[i]);
+				}
+			}
+			if(!f) {
+
+				for(int h=vHistory.size()-1;h>=0;h--) {
+					confirm=new ArrayList<String>();
+					confirm.add(points[i]);
+					System.out.println("add "+vHistory.get(h));
+					String[] his=vHistory.get(h).split("-");
+					if(confirm.contains(his[1])) continue;
+					confirm.add(his[0]);
+					System.out.println();
+					root.addPoints(his[0], his[1], lHistory.get(h));
+				}
+			}
+		}
+		f=false;
 	}
 }
