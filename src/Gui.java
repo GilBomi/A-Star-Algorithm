@@ -1,4 +1,4 @@
-
+﻿
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -18,19 +18,20 @@ public class Gui extends JFrame{
 		setTitle("a알고리즘 gui");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setLayout(new BorderLayout());
+		jpn3 jpanel3=new jpn3();
 		jpn2 jpanel2=new jpn2();
 		jpn1 jpanel1=new jpn1(jpanel2);
 		//기존 a*알고리즘을 선택했을 때\
-		jpanel2.setGui();
-
+		jpanel2.setGui(jpanel3);
+		add(jpanel3,BorderLayout.CENTER);
 		add(jpanel1,BorderLayout.PAGE_START);
-		add(jpanel2,BorderLayout.CENTER);
+		add(jpanel2,BorderLayout.LINE_START);
 		setVisible(true);
 	}
 }
 class jpn1 extends JPanel{ // 맨 상위 버튼 구현
 	JButton button1,button2;
-	
+
 	public jpn1(jpn2 jp) {
 		// TODO Auto-generated constructor stub
 		button1=new JButton("기존 A*알고리즘");
@@ -61,13 +62,15 @@ class jpn2 extends JPanel{
 	Color color;
 	static String[] input;
 	static int ii;
+	Main m;
 	boolean flag=false;
 
 	JLabel label2;
 	JTextField text2;
 	JButton button2;
-	public void setGui() {
-		Main m=new Main();
+
+	public void setGui(jpn3 jpanel3) {
+		m=new Main();
 		JLabel label1=new JLabel("Input Route");
 		JTextField text1=new JTextField(7);
 		JButton button1=new JButton("저장");
@@ -83,7 +86,7 @@ class jpn2 extends JPanel{
 					if(input[0].equals("0")) {
 						flag=true;
 						System.out.println(m.getRoot().toString());
-						m.getRoot().print(0);
+						//m.getRoot().print(0);
 						JLabel label3=new JLabel("도착지 입력");
 						JTextField text3=new JTextField(10);
 						JButton button3=new JButton("저장");
@@ -110,8 +113,17 @@ class jpn2 extends JPanel{
 									label4.repaint();
 									label5.revalidate(); // 이벤트 실행후 바로 컴포넌트가 실행 안될 떄 
 									label5.repaint();
-									if(m.getStart().equals(m.getEnd())) m.getRoot().searchAlgorithm1(0);
-									else m.getRoot().searchAlgorithm2(0);
+									if(m.getStart().equals(m.getEnd())) {
+										m.getRoot().searchAlgorithm1(0);
+										m.getRoot().print(0);
+									}
+									else {
+										m.getRoot().searchAlgorithm2(0);
+										m.getRoot().print2(0,1);
+									}
+									jpanel3.setMain(getMain());
+									System.out.println("-------------------------");
+									jpanel3.setGui(0);
 								}
 							}
 						});
@@ -144,6 +156,7 @@ class jpn2 extends JPanel{
 								lengths[ii]=Integer.parseInt(text2.getText());
 								if(ii<points.length-1) {
 									label2.setText("Input "+input[0]+"-"+points[ii+1]+" Length");
+									text2.setText("");
 									ii++;
 								}
 								else {
@@ -152,11 +165,12 @@ class jpn2 extends JPanel{
 									label2.setVisible(false);
 									text2.setVisible(false);
 									button2.setVisible(false);
+									text1.setText("");
 								}
 							}
 						}
 					});
-					
+
 				}
 			}
 		});
@@ -167,5 +181,38 @@ class jpn2 extends JPanel{
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
+	}
+	public Main getMain() {
+		return m;
+	}
+}
+//
+//for(int i=0;i<this.getSize();i++) {
+//	for(int j=0;j<depth;j++) System.out.print("\t");
+//	if(this.g.get(i)==0 || this.finalF.get(i)==0)
+//		System.out.println(this.vertex+"-"+points.get(i).vertex+" : "+this.lengths.get(i)+",h,g,f");
+//	else
+//		System.out.println(this.vertex+"-"+points.get(i).vertex+" : "+this.lengths.get(i)+","+(this.finalF.get(i)-this.g.get(i))+","+this.g.get(i)+"."+this.finalF.get(i));
+//	points.get(i).print(depth+1);
+//}
+
+class jpn3 extends JPanel {
+	Main m;
+
+	public void setGui(int depth) { // 시작노드==도착노드
+		for(int i=0;i<m.getRoot().getSize();i++) {
+			for(int j=0;j<depth;j++) System.out.print("\t");
+			if(m.getRoot().getAllG().get(i)==0 || m.getRoot().getAllFinalF().get(i)==0)
+				System.out.println("+++++"+m.getRoot().getAllFinalF().get(i));
+			//System.out.println(this.vertex+"-"+points.get(i).vertex+" : "+this.lengths.get(i)+",h,g,f");
+			else
+				System.out.println("+++++"+m.getRoot().getAllFinalF().get(i));
+			//System.out.println(this.vertex+"-"+points.get(i).vertex+" : "+this.lengths.get(i)+","+(this.finalF.get(i)-this.g.get(i))+","+this.g.get(i)+"."+this.finalF.get(i));
+			m.getRoot().getAllPoints().get(i).setGui(depth+1);
+		}
+
+	}
+	public void setMain(Main m) {
+		this.m=m;
 	}
 }

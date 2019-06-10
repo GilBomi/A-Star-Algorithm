@@ -1,4 +1,4 @@
-
+﻿
 import java.util.ArrayList;
 
 public class Main{
@@ -37,6 +37,18 @@ public class Main{
 		}
 		public String getVertex() {
 			return vertex;
+		}
+		public ArrayList<Node> getAllPoints() {
+			return points;
+		}
+		public String getAllVertex() {
+			return vertex;
+		}
+		public ArrayList<Integer> getAllFinalF() {
+			return finalF;
+		}
+		public ArrayList<Integer> getAllG() {
+			return g;
 		}
 		//경로 추가 메소드
 		private void add(String points,int length) {
@@ -93,7 +105,7 @@ public class Main{
 			for(int i=0;i<this.points.size();i++) result+=this.points.get(i).toString()+" - "+this.lengths.get(i)+" ";
 			return result;
 		}
-
+		
 		//길이 조회 메소드
 		public String getLengths() {
 			if(isEmpty()) return "Empty";
@@ -121,11 +133,26 @@ public class Main{
 		}
 
 		//출력 메소드
-		public void print(int depth) {
+		public void print(int depth) { // 시작노드==도착노드
 			for(int i=0;i<this.getSize();i++) {
 				for(int j=0;j<depth;j++) System.out.print("\t");
-				System.out.println(this.vertex+"-"+points.get(i).vertex+" : "+this.lengths.get(i));
+				if(this.g.get(i)==0 || this.finalF.get(i)==0)
+					System.out.println(this.vertex+"-"+points.get(i).vertex+" : "+this.lengths.get(i)+",h,g,f");
+				else
+					System.out.println(this.vertex+"-"+points.get(i).vertex+" : "+this.lengths.get(i)+","+(this.finalF.get(i)-this.g.get(i))+","+this.g.get(i)+"."+this.finalF.get(i));
 				points.get(i).print(depth+1);
+			}
+		}
+		public void print2(int depth,int n) { // 시작노드!= 도착노드
+			for(int i=0;i<this.getSize();i++) {
+				if(points.get(i).vertex.equals(end) && n!=recursionNum)  // 중간에 도착지 노드가 나오면 출력이 안되게.
+					continue;
+				for(int j=0;j<depth;j++) System.out.print("\t");
+				if(this.g.get(i)==0 || this.finalF.get(i)==0)
+					System.out.println(this.vertex+"-"+points.get(i).vertex+" : "+this.lengths.get(i)+",h,g,f");
+				else
+					System.out.println(this.vertex+"-"+points.get(i).vertex+" : "+this.lengths.get(i)+","+(this.finalF.get(i)-this.g.get(i))+","+this.g.get(i)+"."+this.finalF.get(i));
+				points.get(i).print2(depth+1,n+1);
 			}
 		}
 
@@ -173,8 +200,8 @@ public class Main{
 			System.out.println("가장 작은 인덱스 값:"+minIndex+", 선택된 정점:"+this.points.get(minIndex).vertex);
 			this.points.get(minIndex).searchAlgorithm1(this.g.get(minIndex));
 		}
-
-		public int findRoot() { // 현재정점과 루트노드와 연결된 g값 찾기
+		 // 현재정점과 루트노드와 연결된 g값 찾기
+		public int findRoot() {
 			for(int i=0;i<root.points.size();i++) {
 				if(this.vertex.equals(root.points.get(i).vertex)) {
 					System.out.println(this.vertex+"->"+root.vertex+"의 g값:"+root.lengths.get(i));
@@ -183,7 +210,8 @@ public class Main{
 			}
 			return 0; // 루트노드와 현재 정점과 연결된 것이 없음
 		}
-		public void searchAlgorithm2(int gLength) { // 시작노드와 도착노드가 다른 알고리즘 탐색
+		// 시작노드와 도착노드가 다른 알고리즘 탐색
+		public void searchAlgorithm2(int gLength) { 
 			recursionNum++;
 			for(int i=0;i<this.points.size();i++) { // 자식 노드 수만큼 반복
 				if(end.equals(this.points.get(i).vertex) && recursionNum!=nodeVertex.length()-1) {
@@ -230,6 +258,7 @@ public class Main{
 			System.out.println("가장 작은 인덱스 값:"+minIndex+", 선택된 정점:"+this.points.get(minIndex).vertex);
 			this.points.get(minIndex).searchAlgorithm2(this.g.get(minIndex));
 		}
+
 	}
 
 	public static void findNodeNum(String a,String[] array) {
@@ -240,107 +269,7 @@ public class Main{
 				nodeVertex+=array[i];
 		}
 	}
-	public static void main(String[] args) {
-		System.out.println("main run");
-//		Scanner s=new Scanner(System.in);
-//		root = null;
-		Gui gui=new Gui();
-//		JLabel label2=null;
-		while(true) {
-			//System.out.print("Input Route:");
-//			JLabel label1=new JLabel("Input Route");
-//			JTextField text1=new JTextField(10);
-//			JButton button1=new JButton("저장");
-//			button1.addActionListener(new ActionListener() {
-//				@Override
-//				public void actionPerformed(ActionEvent e) {
-//					// TODO Auto-generated method stub
-//					if(e.getSource()==button1 || e.getSource()==text1)
-//						input=text1.getText().split("-");
-//				}
-//			});
-//			//String[] input=s.next().split("-");
-//			if(input[0].equals("0")) {
-//				break;
-//			}
-//			button1.setVisible(true);
-//			gui.add(label1);
-//			gui.add(text1);
-//			gui.add(button1);
-//			button1.setVisible(true);
-//			//confirm.add(input[0]);
-//			String[] points=input[1].split("");
-//			findNodeNum(input[0],points);
-//			int[] lengths=new int[points.length];
-//			for(int i=0;i<points.length;i++) {
-//				//System.out.print("Input "+input[0]+"-"+points[i]+" Length:");
-//				label2=new JLabel("Input "+input[0]+"-"+points[i]+" Length:");
-//				JTextField text2=new JTextField(10);
-//				JButton button2=new JButton("저장");
-//				ii=i;
-//				button2.addActionListener(new ActionListener() {
-//					@Override
-//					public void actionPerformed(ActionEvent e) {
-//						// TODO Auto-generated method stub
-//						if(e.getSource()==button2 || e.getSource()==text2)
-//							lengths[ii]=Integer.parseInt(text2.getText());
-//						System.out.println("ii:"+ii);
-//					}
-//				});
-//				gui.add(label2);
-//				gui.add(text2);
-//				gui.add(button2);
-//				
-//			}
-//			
-//			for(int i=0;i<points.length;i++) {
-//				if(root==null) root=new Node(input[0],points[i],lengths[i]);
-//				else {
-//					if(!input[0].equals("a")) {
-//						vHistory.add(""+input[0]+"-"+points[i]);
-//						lHistory.add(lengths[i]);
-//					}
-//					System.out.printf("vertex %s - add %s\n",input[0],points[i]);
-//					confirm=new ArrayList<String>();
-//					confirm.add(input[0]);
-//					root.addPoints(input[0],points[i],lengths[i]);
-//					if(!f) {
-//						vHistory.add(""+points[i]+"-"+input[0]);
-//						lHistory.add(lengths[i]);
-//						System.out.printf("vertex %s - add %s\n------------------\n",points[i],input[0]);
-//						confirm=new ArrayList<String>();
-//						confirm.add(points[i]);
-//						root.addPoints(points[i],input[0],lengths[i]);
-//					}
-//				}
-//				if(!f) {
-//
-//					for(int h=vHistory.size()-1;h>=0;h--) {
-//						confirm=new ArrayList<String>();
-//						confirm.add(points[i]);
-//						System.out.println("add "+vHistory.get(h));
-//						String[] his=vHistory.get(h).split("-");
-//						if(confirm.contains(his[1])) continue;
-//						confirm.add(his[0]);
-//						System.out.println();
-//						root.addPoints(his[0], his[1], lHistory.get(h));
-//					}
-//				}
-//			}
-//			f=false;
-		}
-//		System.out.println(root.toString());
-//		root.print(0);
-//		System.out.print("도착지 입력:");
-//		end=s.next();
-//		start=root.vertex;
-//		System.out.println("출발지는 "+start);
-//		System.out.println("도착지는 "+end);
-//		if(start.equals(end)) root.searchAlgorithm1(0); // 시작노드와 도착노드가 같을때
-//		else root.searchAlgorithm2(0); // 시작노드와 도착노드가 다를때
-
-	}
-	public Node getRoot() {
+	public static Node getRoot() {
 		return root;
 	}
 	public void setEnd(String e) {
@@ -397,5 +326,8 @@ public class Main{
 			}
 		}
 		f=false;
+	}
+	public static void main(String[] args) {
+		Gui gui=new Gui();
 	}
 }
