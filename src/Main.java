@@ -134,15 +134,20 @@ public class Main{
 
 		//출력 메소드
 		public void print(int depth) { // 시작노드==도착노드
-			for(int i=0;i<this.getSize();i++) {
-				for(int j=0;j<depth;j++) System.out.print("\t");
-				if(this.g.get(i)==0 || this.finalF.get(i)==0)
-					System.out.println(this.vertex+"-"+points.get(i).vertex+" : "+this.lengths.get(i)+",h,g,f");
-				else
-					System.out.println(this.vertex+"-"+points.get(i).vertex+" : "+this.lengths.get(i)+","+(this.finalF.get(i)-this.g.get(i))+","+this.g.get(i)+"."+this.finalF.get(i));
-				points.get(i).print(depth+1);
-			}
-		}
+            if(this.points==null) {// 중간에 도착지 노드가 나오면 출력이 안되게.
+               for(int j=0;j<depth;j++) System.out.print("\t");
+               System.out.println("\t"+this.vertex+"-a : "+root.lengths.get(root.vertexs.indexOf(this.vertex)));
+            }
+            for(int i=0;i<this.getSize();i++) {
+               //if(this.points.get(i).points==null) // 자식노드가 리프노드면 
+               for(int j=0;j<depth;j++) System.out.print("\t");
+               if(this.g.get(i)==0 || this.finalF.get(i)==0)
+                  System.out.println(this.vertex+"-"+points.get(i).vertex+" : "+this.lengths.get(i)+",h,g,f");
+               else
+                  System.out.println(this.vertex+"-"+points.get(i).vertex+" : "+this.lengths.get(i)+","+(this.finalF.get(i)-this.g.get(i))+","+this.g.get(i)+"."+this.finalF.get(i));
+               points.get(i).print(depth+1);
+            }
+         }
 		public void print2(int depth,int n) { // 시작노드!= 도착노드
 			for(int i=0;i<this.getSize();i++) {
 				if(points.get(i).vertex.equals(end) && n!=recursionNum)  // 중간에 도착지 노드가 나오면 출력이 안되게.
@@ -160,10 +165,13 @@ public class Main{
 		public void searchAlgorithm1(int gLength) { 
 			recursionNum++;
 			for(int i=0;i<this.points.size();i++) { // 자식 노드 수만큼 반복
+//				System.out.println("i:"+i);
+//				System.out.println("recursionNum:"+recursionNum);
+//				System.out.println("nodeVertex.length()-1:"+(nodeVertex.length()-1));
 				int gg=gLength+this.lengths.get(i);
 				this.g.add(i,gg);
 				System.out.println(this.points.get(i).vertex+"의 g값:"+this.g.get(i));
-				if(this.points.get(i).points==null ) { // 자식노드가 리프노드면
+				if(this.points.get(i).points==null || recursionNum==nodeVertex.length()-1) { // 자식노드가 리프노드면
 					if(recursionNum!=nodeVertex.length()-1) {//모든 정점을 다 돌았는지 확인
 						System.out.println("모든 정점을 돌지 않았습니다.탐색완료되지 않고 종료됩니다.");
 						return;
@@ -173,10 +181,12 @@ public class Main{
 					this.finalF.add(i,this.h.get(i)+this.g.get(i));
 					System.out.println("리프노드의 h값:"+this.h.get(i));
 					System.out.println("리프노드의 f값:"+this.finalF.get(i));
-					if(this.points.get(i).findRoot()==0)
+					if(this.points.get(i).findRoot()==0) {
 						System.out.println("리프노드가 시작노드와 연결되지 않아 탐색이 불가능합니다");
-					else
+					}
+					else {
 						System.out.println("리프노드가 시작노드와 연결되어 정상적으로 탐색 끝났습니다");
+					}
 					return;
 				}
 				int h1=0;
@@ -184,9 +194,9 @@ public class Main{
 					h1+=this.points.get(i).lengths.get(j); // 자식노드의 모든 g값 더하기
 				}
 				h1+=this.points.get(i).findRoot(); // 루트 정점과 연결된 것이 있는지 확인하고 그 값 더하기
-				this.points.get(i).h.add(i,h1);
-				System.out.println(this.points.get(i).vertex+"의 h값:"+this.points.get(i).h.get(i));
-				this.finalF.add(i,this.points.get(i).h.get(i)+this.g.get(i));
+				this.h.add(i,h1);
+				System.out.println(this.points.get(i).vertex+"의 h값:"+this.h.get(i));
+				this.finalF.add(i,this.h.get(i)+this.g.get(i));
 				System.out.println(this.points.get(i).vertex+"의 f값:"+this.finalF.get(i));
 			}
 			int min=Integer.MAX_VALUE; // 최솟값 f를 가진 자식노드 선택하기 위해
@@ -214,13 +224,17 @@ public class Main{
 		public void searchAlgorithm2(int gLength) { 
 			recursionNum++;
 			for(int i=0;i<this.points.size();i++) { // 자식 노드 수만큼 반복
+				System.out.println("i:"+i);
+				System.out.println("recursionNum:"+recursionNum);
+				System.out.println("nodeVertex.length()-1:"+(nodeVertex.length()-1));
 				if(end.equals(this.points.get(i).vertex) && recursionNum!=nodeVertex.length()-1) {
+					System.out.println("continue");
 					continue;
 				}
 				int gg=gLength+this.lengths.get(i);
 				this.g.add(i,gg);
 				System.out.println(this.points.get(i).vertex+"의 g값:"+this.g.get(i));
-				if(this.points.get(i).points==null) { // 자식노드가 리프노드면
+				if(this.points.get(i).points==null ||recursionNum==nodeVertex.length()-1) { // 자식노드가 리프노드면
 					if(recursionNum!=nodeVertex.length()-1  ) {//모든 정점을 다 돌았는지 확인
 						System.out.println("모든 정점을 돌지 않았습니다.탐색완료되지 않고 종료됩니다.");
 						return;
@@ -230,8 +244,9 @@ public class Main{
 					this.finalF.add(i,this.h.get(i)+this.g.get(i));
 					System.out.println("리프노드의 h값:"+this.h.get(i));
 					System.out.println("리프노드의 f값:"+this.finalF.get(i));
-					if(this.points.get(i).vertex.equals(end)==false)
+					if(this.points.get(i).vertex.equals(end)==false) {
 						System.out.println("리프노드가 도착노드와 같지않아 탐색이 불가능합니다");
+					}
 					else
 						System.out.println("리프노드가 도착노드와 같아 정상적으로 탐색 끝났습니다");
 					return;
@@ -240,9 +255,10 @@ public class Main{
 				for(int j=0;j<this.points.get(i).points.size();j++) { // 자식 노드의 자식 노드 수만큼 반복
 					h1+=this.points.get(i).lengths.get(j); // 자식노드의 모든 g값 더하기
 				}
-				this.points.get(i).h.add(i,h1);
-				System.out.println(this.points.get(i).vertex+"의 h값:"+this.points.get(i).h.get(i));
-				this.finalF.add(i,this.points.get(i).h.get(i)+this.g.get(i));
+				this.h.add(i,h1);
+				System.out.println("i:"+i+" "+this.h.get(i));
+				System.out.println(this.points.get(i).vertex+"의 h값:"+this.h.get(i));
+				this.finalF.add(i,this.h.get(i)+this.g.get(i));
 				System.out.println(this.points.get(i).vertex+"의 f값:"+this.finalF.get(i));
 			}
 			int min=Integer.MAX_VALUE; // 최솟값 f를 가진 자식노드 선택하기 위해
@@ -258,7 +274,6 @@ public class Main{
 			System.out.println("가장 작은 인덱스 값:"+minIndex+", 선택된 정점:"+this.points.get(minIndex).vertex);
 			this.points.get(minIndex).searchAlgorithm2(this.g.get(minIndex));
 		}
-
 	}
 
 	public static void findNodeNum(String a,String[] array) {
